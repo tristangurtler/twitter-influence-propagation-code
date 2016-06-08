@@ -9,7 +9,6 @@
 import argparse
 import sys
 import time
-import snowflake
 import numpy as np
 
 from common import *
