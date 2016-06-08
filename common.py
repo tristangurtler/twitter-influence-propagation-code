@@ -1,15 +1,21 @@
 #!/usr/bin/env/python
 
-"""
-Twitter authentication credentials
-"""
+# Twitter authentication credentials
 
-from twython import Twython
+APP_KEY = '<App Key ("Consumer Key") goes here>'
+ACCESS_TOKEN = 'Access token (see below) goes here>'
 
-OAUTH_TOKEN = ""
-OAUTH_TOKEN_SECRET = ""
+# use like so: twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
 
-APP_KEY = ""
-APP_SECRET = ""
+# In order to get an access token, use the following code
 
-#twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+APP_SECRET = '<App Secret ("Consumer Secret") goes here>'
+
+twitter = Twython(APP_KEY, APP_SECRET, oauth_version=2)
+ACCESS_TOKEN = twitter.obtain_access_token()
+
+with open("token.txt", 'wb') as output:
+    output.write(ACCESS_TOKEN + "\n")
+
+# You will find the access token written in a file "token.txt"
+# in the folder you run this code in
