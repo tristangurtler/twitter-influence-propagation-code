@@ -19,6 +19,8 @@ Code to generate dataset used in the twitter [influence propagation work](http:/
 }
 ```
 
+Place your twitter credentials in common.py. You can obtain your twitter credentials from https://apps.twitter.com/
+
 #### Get the followers file
 ```
 python get_followers.py --handle FLOTUS --follower_file followers/FLOTUS.txt --start_date 2016-01-01 --end_date 2016-01-30
