@@ -46,9 +46,9 @@ def get_timeline(screen_name):
     tweets.extend(user_timeline)
     tid = user_timeline[0]['id']
     
-    # get more tweets! (up to 1400 more)
+    # get more tweets! (up to 1500 more)
     print "Getting tweets of " + screen_name + "..."
-    for i in tqdm(range(1,15)):
+    for i in tqdm(range(1,16)):
         while True:
             try:
                 time.sleep(1)
@@ -76,7 +76,7 @@ def get_timeline_in_range(screen_name, start_date, end_date):
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     result = []
 
-    # pull the (up to) 1401 most recent tweets put out by user "<screen_name>"
+    # pull the (up to) 1501 most recent tweets put out by user "<screen_name>"
     user_timeline = get_timeline(screen_name)
 
     # select out only those tweets which fall within the appropriate timeframe
