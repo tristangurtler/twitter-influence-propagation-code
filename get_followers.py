@@ -1,8 +1,11 @@
 #!/usr/bin/env/python
 
-""" Given a twitter handles, this gets the list of followers of the user
-    and saves the results in a file.
-"""
+#############################################################
+# Given a broadcaster's twitter handle, gets a random list  #
+# of <num_followers> followers of the broadcaster and saves #
+# this into a file as directed by the user.                 #
+#############################################################
+
 import argparse
 import sys
 import time
