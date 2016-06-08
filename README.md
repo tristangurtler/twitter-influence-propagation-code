@@ -16,7 +16,7 @@ Code to generate datasets as used in the twitter [influence propagation work](ht
 }
 ```
 
-To use this code, you will need to place your twitter credentials in common.py. If you do not have credentials or do not remember them, you can obtain them [here](https://apps.twitter.com/)
+To use this code, you will need to place your twitter credentials in common.py. If you do not have credentials or do not remember them, you can obtain them [here](https://apps.twitter.com/).
 
 #### Get the followers file
 ```
