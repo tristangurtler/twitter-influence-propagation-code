@@ -177,6 +177,30 @@ def get_usernames(users, waiting):
 
     return screen_names
 
+
+# UID_Assigner
+# a class to facilitate ease in stripping usernames down to arbitrary node IDs,
+# as used for postprocessing
+class UID_Assigner:
+    # UIDAssigner(leader)
+    # initializes the class to know who the broadcaster (node 1) is
+    # @arg leader -- username of the broadcaster to track
+    def __init__(self, leader):
+        self.leader = leader
+        self.curr_uid = 2
+        self.d = {"-1" : 0, leader : 1}
+
+    # a.get_UID(handle)
+    # gets (or assigns, if necessary) the proper node ID of a user
+    # @arg handle -- username to find a node ID for
+    # @return the appropriate node ID for handle
+    def get_UID(self, handle):
+        if handle in self.d:
+            return self.d[handle]
+        self.d[handle] = self.curr_uid
+        self.curr_uid += 1
+        return self.curr_uid - 1
+
 # file_len(fname)
 # gets the number of lines in a file
 # @arg fname -- name of the file to check
@@ -187,16 +211,3 @@ def file_len(fname):
         for i, l in enumerate(f):
             pass
     return i + 1
-
-class UID_Assigner:
-    def __init__(self, leader):
-        self.leader = leader
-        self.curr_uid = 2
-        self.d = {"-1" : 0, leader : 1}
-
-    def get_UID(self, handle):
-        if handle in self.d:
-            return self.d[handle]
-        self.d[handle] = self.curr_uid
-        self.curr_uid += 1
-        return self.curr_uid - 1
