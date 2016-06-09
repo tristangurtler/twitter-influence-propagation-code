@@ -9,8 +9,8 @@ from twython.exceptions import TwythonRateLimitError
 
 # Twitter authentication credentials
 # use like so: twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
-APP_KEY = 'K96DwyMgH0tVmNFUAGTmO7HsQ'
-ACCESS_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAIg8vgAAAAAAwE1eH154vEZ5vp5H%2BqdwMbyoRwA%3DMytkn7H2pW16syzzXmmoPd7uOg6GAcUhJAFjeNLebI3PXQyyaZ'
+APP_KEY = '<App Key ("Consumer Key") goes here>'
+ACCESS_TOKEN = '<Access token (see below) goes here>'
 #################################################################
 # In order to get an access token, use the following code       #
 #                                                               #
