@@ -9,8 +9,8 @@ from twython.exceptions import TwythonRateLimitError
 
 # Twitter authentication credentials
 # use like so: twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
-APP_KEY = '<App Key ("Consumer Key") goes here>'
-ACCESS_TOKEN = '<Access token (see below) goes here>'
+APP_KEY = 'K96DwyMgH0tVmNFUAGTmO7HsQ'
+ACCESS_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAIg8vgAAAAAAwE1eH154vEZ5vp5H%2BqdwMbyoRwA%3DMytkn7H2pW16syzzXmmoPd7uOg6GAcUhJAFjeNLebI3PXQyyaZ'
 #################################################################
 # In order to get an access token, use the following code       #
 #                                                               #
@@ -57,14 +57,14 @@ def get_timeline(screen_name, waiting):
     tweets.extend(user_timeline)
     tid = user_timeline[0]['id']
     
-    # get more tweets! (up to 1500 more)
+    # get more tweets! (up to 1600 more)
     print "Getting tweets of " + screen_name + "..."
-    for i in tqdm(range(1,16)):
+    for i in tqdm(range(8)):
         while True:
             try:
                 time.sleep(waiting)
                 # this works because Twython gives us tweets in reverse chronological order (don't want to repeat, so set a max)
-                user_timeline = twitter.get_user_timeline(screen_name=screen_name, count=100, max_id=tid, include_retweets=False)
+                user_timeline = twitter.get_user_timeline(screen_name=screen_name, count=200, max_id=tid, include_retweets=False)
                 break
             except TwythonAuthError as e:
                 print "TwythonAuthError..."
