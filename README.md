@@ -18,14 +18,22 @@ Code to generate datasets as used in the twitter [influence propagation work](ht
 
 To use this code, you will need to place your twitter credentials in common.py. If you do not have credentials or do not remember them, you can obtain them [here](https://apps.twitter.com/).
 
-#### Get the followers file
+#### Get your data (easy tool)
+```
+python pull_star_data.py --handle <handle of broadcaster> --num_followers <how many followers you desire> --start_date YYYY-MM-DD --end_date YYYY-MM-DD --output PATH/TO/OUTPUT/<handle>.txt
+```
+This program will do all of the work of all the other programs, without stopping to write down the intermediary steps. Use it if you just want to get your stuff now, and don't think you'll need data like usernames. (NOTE: this takes a while to run, and if you shut down in the middle, no work will be saved! So make sure to let it finish before you stop it unless you don't care about that run).
+
+#### Get your data (step by step)
+
+##### Get the followers file
 ```
 python get_followers.py --handle <username of broadcaster> --num_followers <number of followers to retrieve; default: 50> --followers_file PATH/TO/followers/<username>.txt --start_date YYYY-MM-DD --end_date YYYY-MM-DD
 ```
 This code will produce a list of followers, as many as you specify, of the broadcaster that you specify, active between the start date and the end date (that is, they retweeted the broadcaster at least once during that time).
 
 
-#### Get the tweets file
+##### Get the tweets file
 
 ```
 python get_tweets.py --handle <username of broadcaster> --followers_file PATH/TO/followers/<username>.txt --tweets_file PATH/TO/tweets/<username>.txt --start_date YYYY-MM-DD --end_date YYYY-MM-DD
@@ -33,7 +41,7 @@ python get_tweets.py --handle <username of broadcaster> --followers_file PATH/TO
 This code will produce a csv of timestamps, usernames, and if it was a retweet, of every tweet by the broadcaster and their follower between the start date and the end date. Retweets currently are only noted if they are retweets of the original broadcaster, not across the network.
 
 
-#### Postprocess the tweets file
+##### Postprocess the tweets file
 ```
 python postprocessing.py --leader <username of broadcaster> --tweets_file PATH/TO/tweets/<username>.txt --processed_file PATH/TO/tweets_processed/<username>.txt
 ```
