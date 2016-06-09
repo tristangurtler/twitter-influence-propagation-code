@@ -33,5 +33,5 @@ python get_tweets.py --handle <username of broadcaster> --followers_file PATH/TO
 
 #### Postprocess the tweets file
 ```
-python postprocessing.py --leader_handle <username of broadcaster> --tweets_file PATH/TO/tweets/<username>.txt --output PATH/TO/tweets_processed/<username>.txt
+python postprocessing.py --leader <username of broadcaster> --tweets_file PATH/TO/tweets/<username>.txt --processed_file PATH/TO/tweets_processed/<username>.txt
 ```
