@@ -84,3 +84,5 @@ python postprocessing_generic.py --users_file PATH/TO/networks/<handle>.txt --tw
 ```
 This code will sort the csv produced by get_tweets_generic.py by timestamps (and strip the username data out, using arbitrary node ids instead). A node id of 0 is used to indicate that a tweet was not a retweet.
 
+## Acknowledgements
+I'd like to thank [Apurv Verma](https://github.com/dapurv5) for the initial inspiration for this code. Further, thanks go out to [Nick Galbreath](https://github.com/client9) for his work in translating between Twitter Snowflake IDs and UTC timecodes.
