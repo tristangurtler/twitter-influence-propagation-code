@@ -174,6 +174,7 @@ def get_active_users_around(center, start_date, end_date, threshold, num_friends
     user_ids = []
     all_tweets = []
 
+    # get friends and followers around a central user
     print "Getting users..."
     while True:
         try:
@@ -197,15 +198,18 @@ def get_active_users_around(center, start_date, end_date, threshold, num_friends
             time.sleep(waiting)
             continue
 
+    # choose out random friends and followers from the previous list, with a safety factor of 2 times as many as asked for to account for the fact that some users will not be active
     following = map(lambda x: str(x), np.random.choice(following['ids'], min(int(num_friends * 2), len(following['ids'])), replace=False))
     followers = map(lambda x: str(x), np.random.choice(followers['ids'], min(int(num_followers * 2), len(followers['ids'])), replace=False))
     following = get_usernames(following, waiting)
     followers = get_usernames(followers, waiting)
 
+    # figure out how many tweets are necessary to deem a user "active"
     start = datetime.strptime(start_date, "%Y-%m-%d")
     end = datetime.strptime(end_date, "%Y-%m-%d")
     threshold = abs(end-start).days * threshold
 
+    # collect out as many active followed users from the central user (and their tweets) as we can, up to a limit of the number asked for
     collected_friends = []
     for user in following:
         user_timeline = get_timeline_in_range(user, start_date, end_date, waiting)
@@ -215,6 +219,7 @@ def get_active_users_around(center, start_date, end_date, threshold, num_friends
         if len(collected_friends) >= num_friends:
             break
 
+    # collect out as many active followers from the central user (and their tweets) as we can, up to a limit of the number asked for
     collected_followers = []
     for user in followers:
         user_timeline = get_timeline_in_range(user, start_date, end_date, waiting)
@@ -224,6 +229,7 @@ def get_active_users_around(center, start_date, end_date, threshold, num_friends
         if len(collected_followers) >= num_followers:
             break
 
+    # return our list of users and their tweets from the time period in question
     user_ids.extend(collected_friends)
     user_ids.extend(collected_followers)
     return (user_ids, all_tweets)
@@ -294,6 +300,7 @@ class UID_Assigner:
 
     # a.get_UID_no_add(handle)
     # gets the proper node ID of a user, only returning a valid value if they already exist
+    # (use this to filter out external users)
     # @arg handle -- username to find a node ID for
     # @return the appropriate node ID for handle
     def get_UID_no_add(self, handle):
