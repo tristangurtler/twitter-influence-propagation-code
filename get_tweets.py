@@ -41,7 +41,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Specify arguments')
     parser.add_argument('--handle', help='twitter handle of this celebrity', required=True)
-    parser.add_argument('--followers_file', help='the top 50 followers', required=True)
+    parser.add_argument('--followers_file', help='the top however many followers', required=True)
     parser.add_argument('--tweets_file', help='the output folder', required=True)
     parser.add_argument('--start_date', help='start date YYYY-mm-dd format', required=True)
     parser.add_argument('--end_date', help='ending date YYYY-mm-dd format', required=True)

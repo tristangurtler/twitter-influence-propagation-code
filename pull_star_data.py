@@ -51,7 +51,7 @@ def main(args):
         # process the followers' tweets
         for tweet in follower_tweets:
             timestamp = str(datetime.strptime(tweet['created_at'], "%a %b %d %H:%M:%S +0000 %Y").strftime('%s'))
-            # QUESTION: is this really the best way to tell if a tweet is a RT? it is, at least, the way you'd do directed tweets/replies, just...
+            # QUESTION: is this really the best way to tell if a tweet is a RT? it is, at least, one way you'd do directed tweets/replies, just...
             all_tweets.append((long(timestamp), i + 1, (1 if args.handle in tweet['text'] else 0)))
 
     # sort all tweets by timestamp, then write them to file
