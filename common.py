@@ -119,7 +119,7 @@ def get_timeline_in_range(screen_name, start_date, end_date, waiting):
     start_id = snowflake.utc2snowflake(time.mktime(start_date.timetuple()))
     end_id = snowflake.utc2snowflake(time.mktime(end_date.timetuple()))
 
-    twitter = Twython(common.APP_KEY, access_token=common.ACCESS_TOKEN)
+    twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
     tweets = []
 
     # We need at least one tweet to start with (choose it to be in the timeframe)
