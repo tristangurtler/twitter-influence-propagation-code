@@ -11,6 +11,7 @@ import common
 from datetime import datetime
 
 def main(args):
+    # this value is used to provide visual feedback on how the code is proceding, but isn't strictly necessary
     total_followers = common.file_len(args.users_file)
     a = common.UID_Assigner()
     with open(args.users_file, 'r') as users_file:
@@ -24,6 +25,7 @@ def main(args):
                 # write down the tweets of a user
                 for tweet in tweets:
                     timestamp = str(datetime.strptime(tweet['created_at'], "%a %b %d %H:%M:%S +0000 %Y").strftime('%s'))
+                    # we define a retweet as being both if a user directly retweets another tweet, and if they are merely replying to a previous tweet (that is, it merely shows cross-node interaction)
                     retweeted = (tweet['retweeted_status']['user']['screen_name'] if 'retweeted_status' in tweet else (tweet['in_reply_to_screen_name'] if 'in_reply_to_screen_name' in tweet else ('-1')))
                     # format: timestamp, their username, username of who they're retweeting (-1 if not a retweet)
                     tweets_file.write(timestamp + "," + handle + "," + str(retweeted) + "\n")

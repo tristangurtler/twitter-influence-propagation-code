@@ -11,6 +11,7 @@ import common
 
 def main(args):
     a = common.UID_Assigner()
+    # begin by noting down only the usernames that are used in our data (so that external retweets are properly ignored)
     with open(args.users_file, 'r') as users_file:
         for handle in users_file:
             handle = handle.rstrip('\n')
@@ -23,7 +24,7 @@ def main(args):
             line = line.strip('\n')
             line = line.split(",") 
 
-            # reduce usernames to node numbers (1-indexed, and 0 indicates NULL)
+            # reduce usernames to node numbers, ignoring external retweets (1-indexed, and 0 indicates NULL)
             user = a.get_UID_no_add(line[1])
             retweeted = a.get_UID_no_add(line[2])
 
