@@ -17,7 +17,7 @@ ACCESS_TOKEN = <Access token (see below) goes here>
 #################################################################
 # In order to get an access token, use the following code       #
 #                                                               #
-# APP_SECRET = '<App Secret ("Consumer Secret") goes here>'     #
+# APP_SECRET = <App Secret ("Consumer Secret") goes here>       #
 #                                                               #
 # twitter = Twython(APP_KEY, APP_SECRET, oauth_version=2)       #
 # ACCESS_TOKEN = twitter.obtain_access_token()                  #
@@ -111,7 +111,7 @@ def get_timeline(screen_name, num_tweets, waiting):
 # @arg end_date -- a string referring to the last day we want to pull tweets for
 # @arg waiting -- how many seconds to wait in between requests (very important to not hit rate limiting)
 # @return their recent timeline from start_date to end_date
-def test_get_timeline_in_range(screen_name, start_date, end_date, waiting):
+def get_timeline_in_range(screen_name, start_date, end_date, waiting):
     start_date = datetime.strptime(start_date, "%Y-%m-%d")
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     
