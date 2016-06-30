@@ -1,4 +1,4 @@
-# twitter-influence-propagation-code
+# Twitter Data Crawler
 
 Code to generate datasets as used in the twitter [influence propagation work](http://arxiv.org/pdf/1603.08981v1.pdf) performed by Li et al.
 

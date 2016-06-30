@@ -1,5 +1,6 @@
 #!/usr/bin/env/python
 
+import snowflake
 import time
 import numpy as np
 from datetime import datetime
@@ -11,8 +12,8 @@ from twython.exceptions import TwythonRateLimitError
 
 # Twitter authentication credentials
 # use like so: twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
-APP_KEY = <App Key goes here>
-ACCESS_TOKEN = <Access Token goes here>
+APP_KEY = <App Key ("Consumer Key") goes here>
+ACCESS_TOKEN = <Access token (see below) goes here>
 #################################################################
 # In order to get an access token, use the following code       #
 #                                                               #
@@ -30,13 +31,17 @@ ACCESS_TOKEN = <Access Token goes here>
 
 
 # get_timeline(screen_name, waiting)
-# gets a user's recent timeline from twitter, up to the 1501 most recent tweets (if there are that many)
+# gets a user's recent timeline from twitter, up to the amount of tweets you specify)
 # @arg screen_name -- the username of the user we want to pull tweets for
+# @arg num_tweets -- the (minimum) number of tweets you want from the user (only applies if they have tweeted at least that many)
 # @arg waiting -- how many seconds to wait in between requests (very important to not hit rate limiting)
 # @return their recent timeline
-def get_timeline(screen_name, waiting):
+def get_timeline(screen_name, num_tweets, waiting):
     twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
     tweets = []
+    num_iter = int(num_tweets / 200) + 1
+    num_iter = num_iter if num_iter <= 16 else 16
+    num_iter = num_iter if num_iter >= 1 else 1
 
     # We need at least one tweet to start with
     while True:
@@ -65,9 +70,9 @@ def get_timeline(screen_name, waiting):
         return tweets
     tid = user_timeline[0]['id']
     
-    # get more tweets! (up to 1600 more)
+    # get more tweets!
     print "Getting tweets of " + screen_name + "..."
-    for i in tqdm(range(8)):
+    for i in tqdm(range(num_iter)):
         while True:
             try:
                 time.sleep(waiting)
@@ -100,31 +105,82 @@ def get_timeline(screen_name, waiting):
 
 # get_timeline_in_range(screen_name, start_date, end_date, waiting)
 # gets a user's timeline within a specific time range from twitter
-# THIS CODE ASSUMES that the time range falls within their 1501 most recent tweets
+# THIS CODE ASSUMES that the time range falls within their 3200 most recent tweets (beyond that, Twitter won't give them to us anyways)
 # @arg screen_name -- the username of the user we want to pull tweets for
 # @arg start_date -- a string referring to the first day we want to pull tweets for
 # @arg end_date -- a string referring to the last day we want to pull tweets for
 # @arg waiting -- how many seconds to wait in between requests (very important to not hit rate limiting)
 # @return their recent timeline from start_date to end_date
-def get_timeline_in_range(screen_name, start_date, end_date, waiting):
+def test_get_timeline_in_range(screen_name, start_date, end_date, waiting):
     start_date = datetime.strptime(start_date, "%Y-%m-%d")
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
-    result = []
+    
+    # we use the code provided by Nick Galbreath (see snowflake.py) to derive a Twitter id from our timestamps to use as max and min values
+    start_id = snowflake.utc2snowflake(time.mktime(start_date.timetuple()))
+    end_id = snowflake.utc2snowflake(time.mktime(end_date.timetuple()))
 
-    # pull the (up to) 1601 most recent tweets put out by user "<screen_name>"
-    user_timeline = get_timeline(screen_name, waiting)
+    twitter = Twython(common.APP_KEY, access_token=common.ACCESS_TOKEN)
+    tweets = []
 
-    # select out only those tweets which fall within the appropriate timeframe
-    # (NOTE: this code assumes that the timeframe will be a subset of the 1401 most recent tweets,
-    # which for recent events and/or typical usage, seems fairly reasonable)
-    for tweet in user_timeline:
-        dt = datetime.strptime(tweet['created_at'], "%a %b %d %H:%M:%S +0000 %Y")
-        if dt >= start_date and dt <= end_date:
-            result.append(tweet)
+    # We need at least one tweet to start with (choose it to be in the timeframe)
+    while True:
+        try:
+            user_timeline = twitter.get_user_timeline(screen_name=screen_name, count=1, since_id=start_id, max_id=end_id)
+            break
+        except TwythonAuthError as e:
+            print "TwythonAuthError..."
+            time.sleep(waiting)
+            return tweets
+        except TwythonRateLimitError as e:
+            print "TwythonRateLimitError... Waiting for 3 minutes (may take multiple waits)"
+            for timer in tqdm(range(3*60)):
+                time.sleep(1)
+            twitter = Twython(common.APP_KEY, access_token=common.ACCESS_TOKEN)
+            time.sleep(waiting)
+            continue
+        except TwythonError as e:
+            print "TwythonError: " + str(e.error_code) + "..."
+            continue
+    
+    # put that one tweet into our list
+    tweets.extend(user_timeline)
+    if not user_timeline:
+        time.sleep(waiting)
+        return tweets
+    tid = user_timeline[0]['id']
+    
+    # get every tweet in the timeframe that we can, and nothing outside of it
+    print "Getting tweets of " + screen_name + "..."
+    while True:
+        while True:
+            try:
+                time.sleep(waiting)
+                # this works because Twython gives us tweets in reverse chronological order (don't want to repeat, so set a max, don't want to go too far, so set a min)
+                user_timeline = twitter.get_user_timeline(screen_name=screen_name, count=200, max_id=tid, since_id=start_id)
+                break
+            except TwythonAuthError as e:
+                print "TwythonAuthError..."
+                return tweets
+            except TwythonRateLimitError as e:
+                print "TwythonRateLimitError... Waiting for 3 minutes (may take multiple waits)"
+                for timer in tqdm(range(3*60)):
+                    time.sleep(1)
+                twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
+                continue
+            except TwythonError as e:
+                print "TwythonError: " + str(e.error_code) + "..."
+                continue
 
-    # let our program's user know how many tweets fit in the time frame
-    print "Found " + str(len(result)) + " tweets in date range " + str(start_date) + " to " + str(end_date)
-    return result
+        # if twitter gave us no tweets, there's no more to get
+        if not user_timeline:
+            break
+
+        # otherwise save them and keep track of which one's the oldest (and set one below it to be the max we'll allow)
+        tweets.extend(user_timeline)
+        tid = user_timeline[-1]['id'] - 1
+    
+    print "Found " + str(len(tweets)) + " tweets in date range " + str(start_date) + " to " + str(end_date)
+    return tweets
 
 # get_retweeters(user_timeline, waiting)
 # gets every person to retweet any of a set of tweets (or, up to 100 per tweet, anyways)
